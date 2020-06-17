@@ -40,7 +40,7 @@ if opcao == 1: #extraindo o arquivo txt do pdf
     pdf = input('Digite o caminho do arquivo em seu computador: ')
 
     print('Carregando..')
-    arquivo = parser.from_file(pdf) #formato usado para abrir arquivos PDF`s
+    arquivo = parser.from_file(pdf) #formato usado para abrir arquivos PDF`s e extrair o txt
     arquivo = arquivo['content'].lower() #retorna o arquivo em letras minusculas para facilitar na mineracao 
 
     txt = [[arquivo]] #nesse momento eu passo o arquivo como lista.
