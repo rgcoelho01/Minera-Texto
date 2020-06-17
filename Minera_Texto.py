@@ -1,17 +1,12 @@
-import io
-from pdfminer.converter import TextConverter
-from pdfminer.pdfinterp import PDFPageInterpreter
-from pdfminer.pdfinterp import PDFResourceManager
-from pdfminer.pdfpage import PDFPage
+from tika import parser
 import pandas as pd
-
+import xlwt
 
 print('--Minera Texto--\n'      
     '1 - PDF\n'
     '2 - TXT\n'
     '3 - Sair')
 opcao = int(input('Digite o formato que deseja minerar o seu texto: '))
-
 
 def OrgTexto(texto):
     for i, palavras in enumerate(texto):
@@ -23,20 +18,19 @@ def OrgTexto(texto):
         trans = {ord(a): '' for a in lista_separados}
         texto[i] = [j.translate(trans) for a in texto for j in a]
 
-
-
         termos = []
         numeros = []
         for c in texto[i]:  # procedimento para percorrer o texto e mostrar uma unica vez cada palavra e a sua quantidade
             if c not in termos:
-                #if len(c) != 1 and len(c) != 2: #removendo vogais e consoantes que estejam sozinhas ex: 'a' frase 'e' 'a' seguinte
+                if len(c) != 1 and len(c) != 2: #removendo vogais e consoantes que estejam sozinhas ex: 'a' frase 'e' 'a' seguinte
                     a = texto[i].count(c)
                     termos.append(c)
                     numeros.append(a)
+                    print(c, '=', a)
 
         print(len(termos))
         dados = pd.DataFrame(data=numeros, index=termos)
-        dados.to_excel('textoTcc_NMinerado.xls')
+        dados.to_excel('dados-tcc_txt.xls')
 
         return dados
 
@@ -45,29 +39,12 @@ if opcao == 1:
     pdf = input('Digite o caminho do arquivo em seu computador: ')
 
     print('Carregando..')
-    def extracao_pdf(texto_pdf): #metodo para extrair o texto do arquivo PDF
-        resource_manager = PDFResourceManager()
-        fake_file_handle = io.StringIO()
-        converter = TextConverter(resource_manager, fake_file_handle)
-        page_interpreter = PDFPageInterpreter (resource_manager, converter)
-        with open(texto_pdf, 'rb') as fh:
-            for page in PDFPage.get_pages(fh,
-                                        caching=True,
-                                        check_extractable=True):
-                page_interpreter.process_page(page)
+    arquivo = parser.from_file(pdf)
+    arquivo = arquivo['content'].lower()
 
-            text = fake_file_handle.getvalue()
-            converter.close()
-            fake_file_handle.close()
-
-        if text:
-            return text.lower() #Deixei todas as letras maiusculas para facilitar na busca
-
-    txt = [[extracao_pdf(pdf)]]
+    txt = [[arquivo]]
     a = OrgTexto(txt)
     print(a)
-
-
 
 elif opcao == 2:
     print('exemplo: C:/Users/User/Documents/ArquivosMachineLearning/Abreu.txt')
