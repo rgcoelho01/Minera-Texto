@@ -33,7 +33,7 @@ with pdfplumber.open("C:/Users/User/Documents/Tcc/projetoTccPatente2.pdf") as pd
             if(lista[0] == "reivindicações" or lista[0] == "reivindicação"):
                 reivindicacoes.append(alo)
                 pageReivi = i
-
+            else
             if(lista[0] == "resumo"):
                 resumo.append(alo)
                 pageResumo = i
